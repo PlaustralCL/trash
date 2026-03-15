@@ -4,6 +4,7 @@ import (
     "fmt"
     "log"
     "os"
+    "path/filepath"
     "time"
 )
 
@@ -14,13 +15,26 @@ func main() {
     // makeTrashDirectories()
     // fmt.Println("Success!")
 
+    _, trashFiles, _ := trashPaths()
 
     args := os.Args
     for _, arg := range args[1:]{
+        oldPath, err := filepath.Abs(arg)
+        if err != nil {
+            fmt.Printf("Error 1: %s\n", err)
+        }
         timeNow := time.Now()
         id := fmt.Sprintf("%v", timeNow.UnixMicro())
-        newFileName := fmt.Sprintf("%s_%s", id, arg)
-        fmt.Println(newFileName)
+        newPath := fmt.Sprintf("%s/%s_%s", trashFiles, id, filepath.Base(arg))
+        err = os.Rename(oldPath, newPath)
+        if err != nil {
+            fmt.Printf("%s does not exist\n", oldPath)
+        }
+        
+        // fmt.Printf("New file name: %s\n", newFileName)
+        // absoluteFilepath = filepath.Abs(arg)
+        // fmt.Println(filepath.Abs(arg))
+        
     }
 
     
