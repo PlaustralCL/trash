@@ -4,14 +4,24 @@ import (
     "fmt"
     "log"
     "os"
+    "time"
 )
 
 // $XDG_DATA_HOME = $HOME/.local/share
 // Trash location = $XDG_DATA_HOME/Trash
 
 func main() {
-    makeTrashDirectories()
-    fmt.Println("Success!")
+    // makeTrashDirectories()
+    // fmt.Println("Success!")
+
+
+    args := os.Args
+    for _, arg := range args[1:]{
+        timeNow := time.Now()
+        id := fmt.Sprintf("%v", timeNow.UnixMicro())
+        newFileName := fmt.Sprintf("%s_%s", id, arg)
+        fmt.Println(newFileName)
+    }
 
     
 }
@@ -20,8 +30,8 @@ func main() {
 // If the HOME variable is not set, the program is exited
 // with a status code of 1.
 func getHome() string {
-    home, ok := os.LookupEnv("HOME")
-    if !ok {
+    home, err := os.UserHomeDir()
+    if err != nil {
         log.Fatalln("$HOME variable not set")
     } 
     return home
