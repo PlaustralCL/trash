@@ -15,29 +15,44 @@ func main() {
     // makeTrashDirectories()
     // fmt.Println("Success!")
 
-    _, trashFiles, _ := trashPaths()
+    // _, trashFiles, _ := trashPaths()
 
     args := os.Args
     for _, arg := range args[1:]{
-        oldPath, err := filepath.Abs(arg)
-        if err != nil {
-            fmt.Printf("Error 1: %s\n", err)
-        }
-        timeNow := time.Now()
-        id := fmt.Sprintf("%v", timeNow.UnixMicro())
-        newPath := fmt.Sprintf("%s/%s_%s", trashFiles, id, filepath.Base(arg))
-        err = os.Rename(oldPath, newPath)
-        if err != nil {
-            fmt.Printf("%s does not exist\n", oldPath)
-        }
+        oldPath := buildOldPath(arg)
+        newPath := buildNewPath(arg)
+        moveFile(oldPath, newPath)
         
-        // fmt.Printf("New file name: %s\n", newFileName)
-        // absoluteFilepath = filepath.Abs(arg)
-        // fmt.Println(filepath.Abs(arg))
-        
-    }
+    }    
+}
 
-    
+// Function moveFile moves a file form oldPath to newPath.
+// If oldPath does not exist or the user does not have permission to write to
+// newPath no file changes take place and a statement is printed saying 
+// the file could not be moved.
+func moveFile(oldPath, newPath string) {
+    err := os.Rename(oldPath, newPath)
+    if err != nil {
+        fmt.Printf("Unable to move %s. Please verify it exists and you have write permissions to the Trash directory.", oldPath)
+    }
+}
+
+// Function buildOldPath returns a string for the absolute path the provided file name. 
+func buildOldPath(fileName string) string {
+    oldPath, err := filepath.Abs(fileName)
+        if err != nil {
+            fmt.Println(err)
+        }
+    return oldPath
+}
+
+// Function buildNewPath returns a string of for the abosolute path of the provide file name in the Trash/files directory.
+func buildNewPath(fileName string) string {
+    _, trashFiles, _ := trashPaths()
+    timeNow := time.Now()
+    id := fmt.Sprintf("%v", timeNow.UnixMicro())
+    newPath := fmt.Sprintf("%s/%s_%s", trashFiles, id, filepath.Base(fileName))
+    return newPath
 }
 
 // Function getHome returns the string representation of $HOME.
@@ -67,7 +82,7 @@ func trashPaths() (trashHome, trashFiles, trashInfo string) {
 // no change is made. If the function is not able to create one of the paths,
 // the program will exit with a status of 1. A value of true is returned
 // if all directories are created successfully.
-func makeTrashDirectories() bool {
+func makeTrashDirectories() {
     trashHome, trashFiles, trashInfo := trashPaths();
 
     paths := []string{trashHome, trashFiles, trashInfo}
@@ -77,5 +92,4 @@ func makeTrashDirectories() bool {
             log.Fatalf("Error creating %s\n", path)
         }
     }
-    return true
 }
