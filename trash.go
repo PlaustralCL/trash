@@ -21,7 +21,12 @@ func main() {
     for _, arg := range args[1:]{
         oldPath := buildOldPath(arg)
         newPath := buildNewPath(arg)
-        moveFile(oldPath, newPath)
+        err := os.Rename(oldPath, newPath)
+        if err != nil {
+            fmt.Printf("Unable to move %s. Please verify it exists and you have write permissions to the Trash directory.\n", oldPath)
+            continue
+        }
+        fmt.Println(filepath.Base(newPath))
         
     }    
 }
@@ -31,10 +36,7 @@ func main() {
 // newPath no file changes take place and a statement is printed saying 
 // the file could not be moved.
 func moveFile(oldPath, newPath string) {
-    err := os.Rename(oldPath, newPath)
-    if err != nil {
-        fmt.Printf("Unable to move %s. Please verify it exists and you have write permissions to the Trash directory.", oldPath)
-    }
+
 }
 
 // Function buildOldPath returns a string for the absolute path the provided file name. 
@@ -51,7 +53,9 @@ func buildNewPath(fileName string) string {
     _, trashFiles, _ := trashPaths()
     timeNow := time.Now()
     id := fmt.Sprintf("%v", timeNow.UnixMicro())
-    newPath := fmt.Sprintf("%s/%s_%s", trashFiles, id, filepath.Base(fileName))
+    // newPath := fmt.Sprintf("%s/%s_%s", trashFiles, id, filepath.Base(fileName))
+    newBaseName := fmt.Sprintf("%s_%s", id, filepath.Base(fileName))
+    newPath := filepath.Join(trashFiles, newBaseName)
     return newPath
 }
 
@@ -70,9 +74,9 @@ func getHome() string {
 // for the Trash/, Trash/files, and Trash/info directories.
 func trashPaths() (trashHome, trashFiles, trashInfo string) {
     home := getHome()
-    trashHome = fmt.Sprintf("%s/.local/share/TTTTT", home)
-    trashFiles = fmt.Sprintf("%s/files", trashHome)
-    trashInfo = fmt.Sprintf("%s/info", trashHome)    
+    trashHome = filepath.Join(home, ".local", "share", "TTTTT")    
+    trashFiles = filepath.Join(trashHome, "files")
+    trashInfo = filepath.Join(trashHome, "info")
 
     return trashHome, trashFiles, trashInfo
 }
