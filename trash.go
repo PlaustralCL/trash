@@ -21,14 +21,51 @@ func main() {
     for _, arg := range args[1:]{
         oldPath := buildOldPath(arg)
         newPath := buildNewPath(arg)
-        err := os.Rename(oldPath, newPath)
+        // err := os.Rename(oldPath, newPath)
+        // if err != nil {
+        //     fmt.Printf("Unable to move %s. Please verify it exists and you have write permissions to the Trash directory.\n", oldPath)
+        //     continue
+        // }
+        
+        infoBaseName := fmt.Sprintf("%s.%s",filepath.Base(newPath), "trashinfo")
+        fmt.Println(infoBaseName)
+        fmt.Println(oldPath)
+
+        trashInfo := buildTrashInfo(oldPath)
+        trashInfoFilePath := buildTrashInfoPath(newPath)
+        
+        err := os.WriteFile(trashInfoFilePath, []byte(trashInfo), 0o600)
         if err != nil {
-            fmt.Printf("Unable to move %s. Please verify it exists and you have write permissions to the Trash directory.\n", oldPath)
-            continue
+            fmt.Println(err)
         }
-        fmt.Println(filepath.Base(newPath))
+
+        // fmt.Println(deletionTimeString)
         
     }    
+}
+
+func buildTrashInfoPath(newPath string) string {
+    _, _, trashInfo:= trashPaths()
+    
+    infoBaseName := fmt.Sprintf("%s.%s",filepath.Base(newPath), "trashinfo")
+    infoPath := filepath.Join(trashInfo, infoBaseName)
+    return infoPath
+    
+}
+
+// Function buildTrashInfo builds the string that captures the information
+// required for the .trashinfo file in accordance with https://specifications.freedesktop.org/trash/latest/
+// oldPath contains the original location of the file/directory being moved to trash.
+// The return string is the full contents of the .trashinfo file.
+func buildTrashInfo(oldPath string) string {
+    timeNow := time.Now()
+    deletionTime := timeNow.Format("2006-01-02T15:04:05")
+    trashInfo := fmt.Sprintf(
+`[Trash Info]
+Path=%s
+DeletionDate=%s
+`, oldPath, deletionTime)
+    return trashInfo    
 }
 
 // Function moveFile moves a file form oldPath to newPath.
