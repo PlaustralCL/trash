@@ -11,12 +11,13 @@ import (
 // $XDG_DATA_HOME = $HOME/.local/share
 // Trash location = $XDG_DATA_HOME/Trash
 
+// A directory where trashed files, as well as the information on their
+// original name/location and time of trashing, are stored. 
+// For testing, this is set to "TTTTT". For production, it should be "Trash".
+const trashDirectory = "TTTTT"
+
 func main() {
-    // makeTrashDirectories()
-    // fmt.Println("Success!")
-
-    // _, trashFiles, _ := trashPaths()
-
+    makeTrashDirectories()
     args := os.Args
     for _, arg := range args[1:]{
         oldPath := buildOldPath(arg)
@@ -29,7 +30,6 @@ func main() {
 
         trashInfo := buildTrashInfo(oldPath)
         trashInfoFilePath := buildTrashInfoPath(newPath)
-        
         err = os.WriteFile(trashInfoFilePath, []byte(trashInfo), 0o600)
         if err != nil {
             fmt.Println(err)
@@ -107,7 +107,7 @@ func getHome() string {
 // for the Trash/, Trash/files, and Trash/info directories.
 func trashPaths() (trashHome, trashFiles, trashInfo string) {
     home := getHome()
-    trashHome = filepath.Join(home, ".local", "share", "TTTTT")    
+    trashHome = filepath.Join(home, ".local", "share", trashDirectory)    
     trashFiles = filepath.Join(trashHome, "files")
     trashInfo = filepath.Join(trashHome, "info")
 
