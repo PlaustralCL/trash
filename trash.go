@@ -24,13 +24,13 @@ func main() {
         newPath := buildNewPath(arg)
         err := os.Rename(oldPath, newPath)
         if err != nil {
-            fmt.Printf("Unable to move %s. Please verify it exists and you have write permissions to the Trash directory.\n", oldPath)
+            fmt.Printf("Unable to move %s. Please verify it exists and you permissions to move it.\n", oldPath)
             continue
         }
 
-        trashInfo := buildTrashInfo(oldPath)
+        trashInfoContents := buildTrashInfoContents(oldPath)
         trashInfoFilePath := buildTrashInfoPath(newPath)
-        err = os.WriteFile(trashInfoFilePath, []byte(trashInfo), 0o600)
+        err = os.WriteFile(trashInfoFilePath, []byte(trashInfoContents), 0o600)
         if err != nil {
             fmt.Println(err)
         }
@@ -40,7 +40,7 @@ func main() {
 }
 
 // Builds the absolute path to the new .trashinfo file.
-// Returns the path to the .trashinfo file in the form of a string.
+// Returns the absolute path to the .trashinfo file in the form of a string.
 func buildTrashInfoPath(newPath string) string {
     _, _, trashInfo:= trashPaths()
     
@@ -49,11 +49,11 @@ func buildTrashInfoPath(newPath string) string {
     return infoPath    
 }
 
-// Function buildTrashInfo builds the string that content of the .trashinfo file
-// in accordance with https://specifications.freedesktop.org/trash/latest/
+// Function buildTrashInfoContents builds the content of the .trashinfo file, in the form of a string,
+// in accordance with https://specifications.freedesktop.org/trash/latest/ .
 // oldPath contains the original location of the file/directory being moved to trash.
 // The return string is the full contents of the .trashinfo file.
-func buildTrashInfo(oldPath string) string {
+func buildTrashInfoContents(oldPath string) string {
     timeNow := time.Now()
     deletionTime := timeNow.Format("2006-01-02T15:04:05")
     trashInfo := fmt.Sprintf(
@@ -72,7 +72,8 @@ func moveFile(oldPath, newPath string) {
 
 }
 
-// Function buildOldPath returns a string for the absolute path the provided file name. 
+// Function buildOldPath returns a string for the absolute path to the provided file name. 
+// This is the existing, or old, path to the file that will be moved to the trash.
 func buildOldPath(fileName string) string {
     oldPath, err := filepath.Abs(fileName)
         if err != nil {
@@ -103,8 +104,8 @@ func getHome() string {
     return home
 }
 
-// Function trashPaths returns three strings representing the paths
-// for the Trash/, Trash/files, and Trash/info directories.
+// Function trashPaths returns three strings representing the absolute paths
+// to the Trash/, Trash/files, and Trash/info directories.
 func trashPaths() (trashHome, trashFiles, trashInfo string) {
     home := getHome()
     trashHome = filepath.Join(home, ".local", "share", trashDirectory)    
@@ -117,8 +118,7 @@ func trashPaths() (trashHome, trashFiles, trashInfo string) {
 // Function makeTrashDirectories creates the Trash/, Trash/files, and Trash/info
 // directories if they do not already exist. If the directories already exist,
 // no change is made. If the function is not able to create one of the paths,
-// the program will exit with a status of 1. A value of true is returned
-// if all directories are created successfully.
+// the program will exit with a status of 1. 
 func makeTrashDirectories() {
     trashHome, trashFiles, trashInfo := trashPaths();
 
