@@ -24,7 +24,7 @@ func main() {
     flag.Parse()
 
     if *listFlag {
-        fmt.Println("list files")
+        // fmt.Println("list files")
         listFiles()
         os.Exit(0)
     } else if *pathFlag {
