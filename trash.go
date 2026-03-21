@@ -1,6 +1,7 @@
 package main
 
 import (
+    "flag"
     "fmt"
     "log"
     "os"
@@ -17,7 +18,31 @@ import (
 const trashDirectory = "TTTTT"
 
 func main() {
+    listFlag := flag.Bool("list", false, "list the files in Trash")
+    pathFlag := flag.Bool("path", false, "show the the path to the Trash directory")
+
+    flag.Parse()
+
+    if *listFlag {
+        fmt.Println("list files")
+        listFiles()
+        os.Exit(0)
+    } else if *pathFlag {
+        trashHome, _, _ := trashPaths()
+        fmt.Println(trashHome)
+        os.Exit(0)    
+    } else {
+        fmt.Println("no flag")
+        os.Exit(0)
+    }
+
+
+
     makeTrashDirectories()
+    
+
+
+    
     args := os.Args
     for _, arg := range args[1:]{
         oldPath := buildOldPath(arg)
