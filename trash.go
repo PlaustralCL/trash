@@ -27,16 +27,21 @@ func main() {
             fmt.Printf("Unable to move %s. Please verify it exists and you permissions to move it.\n", oldPath)
             continue
         }
+        createInfoFile(oldPath, newPath)
 
-        trashInfoContents := buildTrashInfoContents(oldPath)
-        trashInfoFilePath := buildTrashInfoPath(newPath)
-        err = os.WriteFile(trashInfoFilePath, []byte(trashInfoContents), 0o600)
-        if err != nil {
-            fmt.Println(err)
-        }
 
         
     }    
+}
+
+// Creates the .trashinfo file and writes the appropriate information to the file.
+func createInfoFile(oldPath, newPath string) {
+    trashInfoContents := buildTrashInfoContents(oldPath)
+    trashInfoFilePath := buildTrashInfoPath(newPath)
+    err := os.WriteFile(trashInfoFilePath, []byte(trashInfoContents), 0o600)
+    if err != nil {
+        fmt.Println(err)
+    }
 }
 
 // Builds the absolute path to the new .trashinfo file.
