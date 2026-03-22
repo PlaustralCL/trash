@@ -9,6 +9,7 @@ import (
 )
 
 type trashinfo struct {
+    trashName string
     path string
     deletionDate string    
 }
@@ -53,7 +54,7 @@ func getInfoData() []trashinfo {
         if filepath.Ext(file.Name()) != ".trashinfo" {
             continue
         }
-        trashInfoData = append(trashInfoData, newTrashinfo(string(data)))
+        trashInfoData = append(trashInfoData, newTrashinfo(file.Name(), string(data)))
     }
     return trashInfoData
 }
@@ -68,7 +69,7 @@ func cwdTrashInfoPath() {
     }
 }
 
-func newTrashinfo(fileContents string) trashinfo {
+func newTrashinfo(trashName, fileContents string) trashinfo {
     lines := strings.Split(fileContents, "\n")
     filepath := lines[1]
     deletionDate := lines[2]
@@ -83,6 +84,7 @@ func newTrashinfo(fileContents string) trashinfo {
     deletionDate = strings.ReplaceAll(deletionDate, "T", " ")
 
     info := trashinfo {
+        trashName: strings.TrimSuffix(trashName, ".trashinfo"),
         path: filepath,
         deletionDate: deletionDate,
     }
