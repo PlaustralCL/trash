@@ -20,6 +20,7 @@ const trashDirectory = "TTTTT"
 func main() {
     listFlag := flag.Bool("list", false, "list the files in Trash")
     pathFlag := flag.Bool("path", false, "show the the path to the Trash directory")
+    restoreFlag := flag.Bool("restore", false, "restore one or more files")
 
     flag.Parse()
 
@@ -31,6 +32,9 @@ func main() {
         trashHome, _, _ := trashPaths()
         fmt.Println(trashHome)
         os.Exit(0)    
+    } else if *restoreFlag {
+        restoreFiles()
+        os.Exit(0)
     } else {
         fmt.Println("no flag")
         os.Exit(0)
