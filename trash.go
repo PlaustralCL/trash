@@ -18,11 +18,12 @@ import (
 const trashDirectory = "TTTTT"
 
 func main() {
-    listFlag := flag.Bool("list", false, "list the files in Trash")
-    pathFlag := flag.Bool("path", false, "show the the path to the Trash directory")
-    restoreFlag := flag.Bool("restore", false, "restore one or more files")
-    removeFlag := flag.Bool("remove", false, "permanetly delete one or more files from the trash")
-    emptyFlag := flag.Bool("empty", false, "permanetly delete all files in the trash")
+    flag.Usage = customUsage
+    listFlag := flag.Bool("list", false, "List the files in trash")
+    pathFlag := flag.Bool("path", false, "Show the the path to the trash directory")
+    restoreFlag := flag.Bool("restore", false, "Restore one or more files")
+    removeFlag := flag.Bool("remove", false, "Permanetly delete one or more files from the trash")
+    emptyFlag := flag.Bool("empty", false, "Permanetly delete all files in the trash")
     flag.Parse()
 
     makeTrashDirectories()
@@ -42,6 +43,14 @@ func main() {
         sendFilesToTrash()
     }
     os.Exit(0)
+}
+
+func customUsage() {
+    fmt.Println("Usage of ./trash:")
+    fmt.Println("With no flags set, all arguments are assumed to be files being sent to trash.")
+    fmt.Println("")
+    fmt.Println("Available flags:")
+    flag.PrintDefaults()
 }
 
 // Send files to the trash
