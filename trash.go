@@ -21,8 +21,9 @@ func main() {
     listFlag := flag.Bool("list", false, "list the files in Trash")
     pathFlag := flag.Bool("path", false, "show the the path to the Trash directory")
     restoreFlag := flag.Bool("restore", false, "restore one or more files")
-
     flag.Parse()
+
+    makeTrashDirectories()
 
     if *listFlag {
         // fmt.Println("list files")
@@ -36,19 +37,22 @@ func main() {
         restoreFiles()
         os.Exit(0)
     } else {
-        fmt.Println("no flag")
+        sendFilesToTrash()
         os.Exit(0)
     }
 
 
 
-    makeTrashDirectories()
-    
 
 
     
+
+}
+
+func sendFilesToTrash() {
+
     args := os.Args
-    for _, arg := range args[1:]{
+    for _, arg := range args[1:] {
         oldPath := buildOldPath(arg)
         newPath := buildNewPath(arg)
         err := os.Rename(oldPath, newPath)
@@ -56,10 +60,7 @@ func main() {
             fmt.Printf("Unable to move %s. Please verify it exists and you permissions to move it.\n", oldPath)
             continue
         }
-        createInfoFile(oldPath, newPath)
-
-
-        
+        createInfoFile(oldPath, newPath)        
     }    
 }
 
