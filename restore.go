@@ -7,7 +7,7 @@ import (
     "os"
     "strconv"
     "strings"
-    // "path/filepath"
+    "path/filepath"
 )
 
 func restoreFiles() {
@@ -15,11 +15,10 @@ func restoreFiles() {
     maxIndex := len(trashInfoData) - 1
     printRestorePrompt(maxIndex, trashInfoData)
     restoreIndices := getRestoreIndices(maxIndex)
-    fmt.Println(len(restoreIndices))
+    recoverFiles(restoreIndices, trashInfoData)
     
 
     
-    fmt.Println("")
 
 }
 
@@ -52,5 +51,26 @@ func getRestoreIndices(maxIndex int) []int {
         }
     }    
     return restoreIndices
+}
+
+func recoverFiles(indices []int, trashInfoData []trashinfo) {
+    for _, index := range indices {
+        _, trashFilesPath, _ := trashPaths()
+        oldPath := filepath.Join(trashFilesPath, trashInfoData[index].trashName)
+        newPath := trashInfoData[index].path
+        // fmt.Printf("newPath: %s\noldPath: %s\n", newPath, oldPath)
+        err := os.Rename(oldPath, newPath)
+        if err != nil {
+            fmt.Printf("Unable to restore %s\n", trashInfoData[index].path)
+            continue
+        }
+
+        trashInfoName := trashInfoData[index].trashName + ".trashinfo"
+        err = os.Remove(trashInfoName)
+        if err != nil {
+            fmt.Printf("Unable to remove %s\n", trashInfoName)
+        }
+    
+    }
 
 }
