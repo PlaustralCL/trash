@@ -3,7 +3,6 @@ package main
 import (
     "bufio"
     "fmt"
-    // "log"
     "os"
     "strconv"
     "strings"
@@ -16,10 +15,6 @@ func restoreFiles() {
     printRestorePrompt(maxIndex, trashInfoData)
     restoreIndices := getRestoreIndices(maxIndex)
     recoverFiles(restoreIndices, trashInfoData)
-    
-
-    
-
 }
 
 // Print the prompt for restoring from trash
@@ -53,12 +48,12 @@ func getRestoreIndices(maxIndex int) []int {
     return restoreIndices
 }
 
+// Copy files from trash to their original location and delete the corresponding .trashinfo file.
 func recoverFiles(indices []int, trashInfoData []trashinfo) {
     for _, index := range indices {
         _, trashFilesPath, _ := trashPaths()
         oldPath := filepath.Join(trashFilesPath, trashInfoData[index].trashName)
         newPath := trashInfoData[index].path
-        // fmt.Printf("newPath: %s\noldPath: %s\n", newPath, oldPath)
         err := os.Rename(oldPath, newPath)
         if err != nil {
             fmt.Printf("Unable to restore %s\n", trashInfoData[index].path)
@@ -70,7 +65,5 @@ func recoverFiles(indices []int, trashInfoData []trashinfo) {
         if err != nil {
             fmt.Printf("Unable to remove %s\n", trashInfoName)
         }
-    
     }
-
 }

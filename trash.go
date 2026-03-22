@@ -40,17 +40,10 @@ func main() {
         sendFilesToTrash()
         os.Exit(0)
     }
-
-
-
-
-
-    
-
 }
 
+// Send files to the trash
 func sendFilesToTrash() {
-
     args := os.Args
     for _, arg := range args[1:] {
         oldPath := buildOldPath(arg)
