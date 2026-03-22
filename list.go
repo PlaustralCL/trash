@@ -74,13 +74,8 @@ func newTrashinfo(trashName, fileContents string) trashinfo {
     filepath := lines[1]
     deletionDate := lines[2]
 
-    // Path=/...
-    // 012345
-    filepath = filepath[5:]
-    
-    // DeletionDate=2026-03-21T14:03:50
-    // 01234567890123
-    deletionDate = deletionDate[13:]
+    filepath = strings.TrimPrefix(filepath, "Path=")
+    deletionDate = strings.TrimPrefix(deletionDate, "DeletionDate=")
     deletionDate = strings.ReplaceAll(deletionDate, "T", " ")
 
     info := trashinfo {
