@@ -63,7 +63,7 @@ func recoverFiles(indices []int, trashInfoData []trashinfo) {
         trashInfoName := trashInfoData[index].trashName + ".trashinfo"
         err = os.Remove(trashInfoName)
         if err != nil {
-            fmt.Printf("Unable to remove %s\n", trashInfoName)
+            fmt.Printf("Unable to delete %s\n", trashInfoName)
         }
     }
 }
