@@ -44,7 +44,7 @@ func printRemovePrompt(maxIndex int, trashInfoData []trashinfo) {
 // Any answer other than "y" or "Y" exits normally.
 func getConfirmation() {
     fmt.Println("*** Warning! This will permanently remove the file(s). ***")
-    fmt.Print("Continue y/[N]: ")
+    fmt.Print("Continue y/[N]? ")
     scanner := bufio.NewScanner(os.Stdin)
     scanner.Scan()
     line := scanner.Text()
