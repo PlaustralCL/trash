@@ -13,7 +13,7 @@ func restoreFiles() {
     trashInfoData := getInfoData()
     maxIndex := len(trashInfoData) - 1
     printRestorePrompt(maxIndex, trashInfoData)
-    restoreIndices := getRestoreIndices(maxIndex)
+    restoreIndices := getIndices(maxIndex)
     recoverFiles(restoreIndices, trashInfoData)
 }
 
@@ -28,8 +28,8 @@ func printRestorePrompt(maxIndex int, trashInfoData []trashinfo) {
 
 // Collects and validates the input from the user.
 // Returns a slice of valid indices corresponding to files to
-// be restored.
-func getRestoreIndices(maxIndex int) []int {
+// selected by the user
+func getIndices(maxIndex int) []int {
     var restoreIndices []int
 
     scanner := bufio.NewScanner(os.Stdin)

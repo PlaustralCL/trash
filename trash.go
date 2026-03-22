@@ -21,25 +21,24 @@ func main() {
     listFlag := flag.Bool("list", false, "list the files in Trash")
     pathFlag := flag.Bool("path", false, "show the the path to the Trash directory")
     restoreFlag := flag.Bool("restore", false, "restore one or more files")
+    removeFlag := flag.Bool("remove", false, "permanetly delete one or more files")
     flag.Parse()
 
     makeTrashDirectories()
 
     if *listFlag {
-        // fmt.Println("list files")
         listFiles()
-        os.Exit(0)
     } else if *pathFlag {
         trashHome, _, _ := trashPaths()
         fmt.Println(trashHome)
-        os.Exit(0)    
     } else if *restoreFlag {
         restoreFiles()
-        os.Exit(0)
+    } else if *removeFlag {
+        removeFiles()
     } else {
         sendFilesToTrash()
-        os.Exit(0)
     }
+    os.Exit(0)
 }
 
 // Send files to the trash
