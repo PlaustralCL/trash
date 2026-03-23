@@ -8,7 +8,7 @@ list files currently in the trash, permanently delete files from the trash can, 
 ## Installation
 
 ### Pre-built binary
-- [Download the latest release.](https://github.gatech.edu/PlaustralCL/trash/releases/latest)
+- [Download the latest release.](https://github.com/PlaustralCL/trash/releases/latest)
 - place the `trash` file in a directory in your path.
 - Ensure that `trash` is executable.
     - `chmod +x trash` if necessary
