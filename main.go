@@ -9,7 +9,7 @@ import (
 // A directory where trashed files, as well as the information on their
 // original name/location and time of trashing, are stored. 
 // For testing, this is set to "TTTTT". For production, it should be "Trash".
-const trashDirectory = "TTTTT"
+const trashDirectory = "Trash"
 
 func main() {
     flag.Usage = customUsage
