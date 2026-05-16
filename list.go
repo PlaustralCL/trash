@@ -21,7 +21,7 @@ type trashinfo struct {
 func listFiles() {
     trashInfoData := getInfoData()
     for _, trashDetails := range trashInfoData {
-        fmt.Printf("%s    %s\n", trashDetails.deletionDate, trashDetails.path) 
+        fmt.Printf("%s %s\n", trashDetails.deletionDate, trashDetails.path) 
     }
 }
 
